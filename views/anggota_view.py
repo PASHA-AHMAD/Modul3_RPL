@@ -16,9 +16,6 @@ class AnggotaView(ctk.CTk):
         self.title("Data Anggota Perpustakaan")
         self.geometry("1000x600")
 
-        # Membuat model anggota
-        self.model = AnggotaModel()
-
         # Konfigurasi Grid Utama
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=2)
@@ -170,9 +167,6 @@ class AnggotaView(ctk.CTk):
             padx=20,
             pady=15
         )
-
-        # Menampilkan data dari database
-        self.tampilkan_data()
 
     # ==========================================
     # FUNGSI MENYIMPAN DATA

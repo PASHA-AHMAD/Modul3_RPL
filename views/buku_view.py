@@ -76,7 +76,9 @@ class BukuView(ctk.CTk):
 
 # Blok eksekusi untuk menguji tampilan grafis
 if __name__ == "__main__":
-    app = BukuView()
-    app.mainloop()
+    from controllers.buku_controllers import BukuController
+
+    app = BukuController()
+    app.run()
     
     
