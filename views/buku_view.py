@@ -43,7 +43,10 @@ class BukuView(ctk.CTk):
         #Tombol Delete
         self.btn_delete = ctk.CTkButton(self.frame_kiri,text="Hapus Data (Delete)",fg_color="red")
         self.btn_delete.pack(pady=10, padx=15, fill="x")
-
+        
+        #Tombol LogOut
+        self.btn_logout = ctk.CTkButton(self.frame_kiri, text="Logout", fg_color="#555555", hover_color="#333333")
+        self.btn_logout.pack(pady=10, padx=15, fill="x")
 
         # ==========================================
         # FRAME KANAN: TABEL DAFTAR BUKU
@@ -76,7 +79,7 @@ class BukuView(ctk.CTk):
 
 # Blok eksekusi untuk menguji tampilan grafis
 if __name__ == "__main__":
-    from controllers.buku_controllers import BukuController
+    from controllers.buku_controller import BukuController
 
     app = BukuController()
     app.run()

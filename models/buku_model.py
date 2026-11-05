@@ -1,3 +1,4 @@
+
 # PASHA AHMAD_F5212520082
 from config.database import Database
 
@@ -12,14 +13,12 @@ class BukuModel:
     def get_all_buku(self):
         if self.conn:
             cursor = self.conn.cursor(dictionary=True)
-
-            query = f"SELECT * FROM {self.table_name}"
-            cursor.execute(query)
-
-            result = cursor.fetchall()
-
-            cursor.close()
-            return result
+            try:
+                query = f"SELECT * FROM {self.table_name}"
+                cursor.execute(query)
+                return cursor.fetchall()
+            finally:
+                cursor.close()
 
         return []
 
@@ -27,24 +26,23 @@ class BukuModel:
     def create_buku(self, judul, penulis, tahun_terbit):
         if self.conn:
             cursor = self.conn.cursor()
+            try:
+                query = f"""
+                    INSERT INTO {self.table_name}
+                    (judul, penulis, tahun_terbit)
+                    VALUES (%s, %s, %s)
+                """
 
-            query = f"""
-                INSERT INTO {self.table_name}
-                (judul, penulis, tahun_terbit)
-                VALUES (%s, %s, %s)
-            """
+                cursor.execute(query, (judul, penulis, tahun_terbit))
+                self.conn.commit()
 
-            val = (judul, penulis, tahun_terbit)
+                return cursor.lastrowid
 
-            cursor.execute(query, val)
-            self.conn.commit()
-
-            # Mengambil ID buku yang baru dibuat oleh MySQL
-            id_buku = cursor.lastrowid
-
-            cursor.close()
-
-            return id_buku
+            except Exception:
+                self.conn.rollback()
+                raise
+            finally:
+                cursor.close()
 
         return None
 
@@ -52,22 +50,30 @@ class BukuModel:
     def update_buku(self, id_buku, judul, penulis, tahun_terbit):
         if self.conn:
             cursor = self.conn.cursor()
+            try:
+                query = f"""
+                    UPDATE {self.table_name}
+                    SET judul = %s,
+                        penulis = %s,
+                        tahun_terbit = %s
+                    WHERE id_buku = %s
+                """
 
-            query = f"""
-                UPDATE {self.table_name}
-                SET judul = %s,
-                    penulis = %s,
-                    tahun_terbit = %s
-                WHERE id_buku = %s
-            """
+                cursor.execute(
+                    query,
+                    (judul, penulis, tahun_terbit, id_buku)
+                )
 
-            val = (judul, penulis, tahun_terbit, id_buku)
+                jumlah_data = cursor.rowcount
+                self.conn.commit()
 
-            cursor.execute(query, val)
-            self.conn.commit()
+                return jumlah_data > 0
 
-            cursor.close()
-            return True
+            except Exception:
+                self.conn.rollback()
+                raise
+            finally:
+                cursor.close()
 
         return False
 
@@ -75,18 +81,23 @@ class BukuModel:
     def delete_buku(self, id_buku):
         if self.conn:
             cursor = self.conn.cursor()
+            try:
+                query = f"""
+                    DELETE FROM {self.table_name}
+                    WHERE id_buku = %s
+                """
 
-            query = f"""
-                DELETE FROM {self.table_name}
-                WHERE id_buku = %s
-            """
+                cursor.execute(query, (id_buku,))
 
-            val = (id_buku,)
+                jumlah_data = cursor.rowcount
+                self.conn.commit()
 
-            cursor.execute(query, val)
-            self.conn.commit()
+                return jumlah_data > 0
 
-            cursor.close()
-            return True
+            except Exception:
+                self.conn.rollback()
+                raise
+            finally:
+                cursor.close()
 
         return False
