@@ -29,7 +29,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4. Menjalankan Automated Unit Testing (Pytest)
-      - name: 4. Menjalankan Automated Unit Testing (Pytest)
+       # 4. Menjalankan pemeriksaan kualitas kode (Flake8)
+      - name: 4. Menjalankan Code Linter (Flake8)
+        run: |
+          flake8 models/ controllers/ --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      # 5. Menjalankan Automated Unit Testing (Pytest)
+      - name: 5. Menjalankan Automated Unit Testing (Pytest)
         run: |
           python -m pytest -v
